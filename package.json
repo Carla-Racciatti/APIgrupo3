@@ -7,9 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "prepare": "husky",
-    "lint" : "npm standard", 
-    "lint:fix" : "npm standard –fix"
-
+    "lint": "npm standard",
+    "lint:fix": "npm standard -–fix"
   },
   "author": "CarlaRacciatti-StefanoMattei-NicolasClemente",
   "license": "ISC",

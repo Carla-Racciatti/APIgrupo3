@@ -17,8 +17,9 @@ class Server {
     // rutas integrante 1: Carla.  Ruta para libros
     this.app.use('/api/v1/libros', require('../routes/books'))
 
-    // rutas integrante 2
-
+    // rutas integrante 2: Nicolás Clemente. Ruta para peliculas
+    this.app.use('/api/v1/peliculas', require('../routes/movies'))
+    
     // rutas integrante 3: Stefano. Ruta para series
     this.app.use('/api/v1/series', require('../routes/series'))
 
@@ -28,9 +29,10 @@ class Server {
     })
   }
 
-  listen () {
+  listen() {
     this.app.listen(this.port, () => {
-    })
+        console.log(`Servidor corriendo en puerto ${this.port}`);
+    });
   }
 }
 

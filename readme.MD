@@ -114,4 +114,31 @@ Nota: Asegurarse que las variables de entorno TMDB_BASE_URL y TMDB_ACCESS_TOKEN 
 . Las respuestas están en español (es-ES) para una mejor experiencia de usuario en el contexto local.
 
 *******************************************************************************************************************
-Integrante 3 : 
+Integrante 3: Stefano Mattei
+
+BÚSQUEDA DE SERIES
+Utilicé la API de TVMaze, la cual proporciona información sobre series de televisión y no requiere una API KEY para su uso.
+
+1- Para obtener una lista completa de series (Punto 1 de la consigna: listado de 50 registros o más):
+Endpoint a usar: GET http://localhost:3000/api/v1/series
+La API devuelve una lista de series, limitada a 50 registros por página para mejorar el rendimiento. Puedes obtener otras 50 series de diferentes páginas utilizando el query param ?page={numero}, donde {numero} indica el número de página.
+Ejemplo: GET http://localhost:3000/api/v1/series?page=2
+Los datos devueltos incluyen: id (identificador único de la serie), name (nombre de la serie), genres (géneros), status (estado de la serie, como "Running" o "Ended"), y premiered (fecha de estreno).
+
+2- Para filtrar series por id (Punto 2 de la consigna: filtrar por id):
+Cada serie tiene un campo id que se utiliza para identificarla de manera única.
+Endpoint a usar: GET http://localhost:3000/api/v1/series/{id}
+Ejemplos de endpoints que se pueden probar:
+
+http://localhost:3000/api/v1/series/82 (Game of Thrones)
+http://localhost:3000/api/v1/series/160 (Breaking bad)
+http://localhost:3000/api/v1/series/6771 (Chicas super poderosas)
+
+3- Para filtrar el listado del punto 1 usando query params (Punto 3 de la consigna: filtrar por algún campo importante):
+He implementado un filtro por género de la serie.
+Endpoint a usar: GET http://localhost:3000/api/v1/series/generos?genre={nombre_del_genero}
+Ejemplos de endpoints que se pueden probar:
+
+http://localhost:3000/api/v1/series/generos?genre=drama
+http://localhost:3000/api/v1/series/generos?genre=comedy
+http://localhost:3000/api/v1/series/generos?genre=horror

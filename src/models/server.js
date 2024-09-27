@@ -19,7 +19,7 @@ class Server {
 
     // rutas integrante 2: Nicolás Clemente. Ruta para peliculas
     this.app.use('/api/v1/peliculas', require('../routes/movies'))
-    
+
     // rutas integrante 3: Stefano. Ruta para series
     this.app.use('/api/v1/series', require('../routes/series'))
 

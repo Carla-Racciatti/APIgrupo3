@@ -24,7 +24,6 @@ class Server {
     this.app.use('/api/v1/series', require('../routes/series'))
 
     // Manejo de rutas incorrectas
-    // Manejo de rutas incorrectas
     this.app.use('*', (req, res) => {
       res.status(404).send('Página no encontrada')
     })

@@ -1,5 +1,4 @@
 const express = require('express')
-const express = require('express')
 
 class Server {
   constructor () {
@@ -8,22 +7,7 @@ class Server {
     this.middleware()
     this.rutas()
   }
-class Server {
-  constructor () {
-    this.app = express()
-    this.port = process.env.PORT || 3000
-    this.middleware()
-    this.rutas()
-  }
 
-  middleware () {
-    this.app.use(express.static('public'))
-    this.app.use(express.json())// para poder recibir formato Json
-  }
-
-  rutas () {
-    // rutas integrante 1: Carla.  Ruta para libros
-    this.app.use('/api/v1/libros', require('../routes/books'))
   middleware () {
     this.app.use(express.static('public'))
     this.app.use(express.json())// para poder recibir formato Json
@@ -45,9 +29,6 @@ class Server {
       res.status(404).send('Página no encontrada')
     })
   }
-      res.status(404).send('Página no encontrada')
-    }
-  }
 
   listen () {
     this.app.listen(this.port, () => {
@@ -56,5 +37,4 @@ class Server {
   }
 }
 
-module.exports = Server
 module.exports = Server

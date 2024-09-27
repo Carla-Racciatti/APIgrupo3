@@ -1,11 +1,11 @@
-API con Express creada con Nodejs - Materia: Laboratorio IV 
+ API con Express creada con Nodejs - Materia: Laboratorio IV 
 GRUPO 3: Racciatti Carla, Mattei Stefano, Clemente Nicolas 
 
 *******************************************************************************************************************
 
 Integrante 1: Carla Racciatti 
 >BÚSQUEDA DE LIBROS
-Utilicé la API "Books API", la cual proporciona datos de libros y no necesita una API KEY. 
+Utilicé la API "OpenLibrary", la cual proporciona datos de libros y no necesita una API KEY. 
 
     -Para obtener lista completa de libros (Punto 1 de la consigna: listado de 50 registros o más): 
          Endpoint a usar: 
@@ -13,11 +13,10 @@ Utilicé la API "Books API", la cual proporciona datos de libros y no necesita u
 
         La API externa suele tardar en enviar la información, por lo que agregué un límite de 70 registros. 
         También desestructuré la respuesta de la API porque enviaba muchos datos que no eran muy relevantes. 
-        Elegí que devuelva únicamente los siguientes datos que o considero relevantes: 
-        "key", "title" (título), "author_name"(autor),"subject"(temas sobre los que trata el libro), "first_publish_date"/ "first_publish_year" (fecha de primera publicación. tuve que usar dos parámetros porque la API no es consistente en los registros y utiliza ambos campos). 
+        Elegí que devuelva únicamente los siguientes datos que yo considero relevantes: 
+        "key", "title" (título), "author_name"(autor),"subject"(temas sobre los que trata el libro), "first_publish_date"/ "first_publish_year" (fecha de primera publicación. En el último caso tuve que usar dos parámetros porque la API no es consistente en los registros y utiliza ambos campos). 
         La API Open Library no es consistente en la estructura de sus respuestas, utiliza diferentes parámetros para guardar la misma información. 
-        Además, es posible que algunos libros no tengan la totalidad de estos datos ya que Open library brinda algunos registros incompletos con campos faltantes. No todos los libros tienen la misma información. Por ejemplo, pude ver muchos libros que no tenían el campo de autor o .
-
+        Además, es posible que algunos libros no tengan la totalidad de estos datos ya que Open library brinda algunos registros incompletos con campos faltantes.Por ejemplo, pude ver muchos libros que no tenían el campo de autor .
 
 
     -Para filtrar libros por id (punto 2 de la consigna: filtrar por id): 
@@ -32,6 +31,10 @@ Utilicé la API "Books API", la cual proporciona datos de libros y no necesita u
         http://localhost:3000/api/v1/libros/OL5819456W
         http://localhost:3000/api/v1/libros/OL99529W
         http://localhost:3000/api/v1/libros/OL531767W
+
+        http://localhost:3000/api/v1/libros/carla
+        http://localhost:3000/api/v1/libros/0000
+         (estos últimos dos devuelven "error. libro no encontrado" ya que no son IDs válidos)
         
     
      -Para filtrar el listado del punto 1 usando query params (punto 2 de la consigna: filtrar por algún campo importante): 
@@ -48,6 +51,12 @@ Utilicé la API "Books API", la cual proporciona datos de libros y no necesita u
         http://localhost:3000/api/v1/libros/subject?subject=animales
         http://localhost:3000/api/v1/libros/subject?subject=musica
         http://localhost:3000/api/v1/libros/subject?subject=aventura
+
+
+        http://localhost:3000/api/v1/libros/subject?subject=alguntema
+        http://localhost:3000/api/v1/libros/subject?subject=carla
+        (estos últimos dos devuelven el mensaje "error": "No se encontraron libros para el subject especificado", ya que no son temas válidos.)
+
 
 
 *******************************************************************************************************************

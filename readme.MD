@@ -145,9 +145,9 @@ http://localhost:3000/api/v1/series/6771 (Chicas super poderosas)
 
 3- Para filtrar el listado del punto 1 usando query params (Punto 3 de la consigna: filtrar por algún campo importante):
 He implementado un filtro por género de la serie.
-Endpoint a usar: GET http://localhost:3000/api/v1/series/generos?genre={nombre_del_genero}
+Endpoint a usar: GET http://localhost:3000/api/v1/series/genero?genre={nombre_del_genero}
 Ejemplos de endpoints que se pueden probar:
 
-http://localhost:3000/api/v1/series/generos?genre=drama
-http://localhost:3000/api/v1/series/generos?genre=comedy
-http://localhost:3000/api/v1/series/generos?genre=horror
+http://localhost:3000/api/v1/series/genero?genre=drama
+http://localhost:3000/api/v1/series/genero?genre=comedy
+http://localhost:3000/api/v1/series/genero?genre=horror

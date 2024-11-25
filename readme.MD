@@ -151,3 +151,56 @@ Ejemplos de endpoints que se pueden probar:
 http://localhost:3000/api/v1/series/genero?genre=drama
 http://localhost:3000/api/v1/series/genero?genre=comedy
 http://localhost:3000/api/v1/series/genero?genre=horror
+
+
+*******************************************************************************************************************
+NUEVO: 
+Integrante 1: Carla Racciatti
+BÚSQUEDA DE ACTORES
+Utilicé la API "The Movie Database" (TMDb), que proporciona datos sobre actores y actrices. 
+Esta API requiere un Access Token para realizar consultas.
+
+1- Para obtener una lista completa de actores populares (Punto 1 de la consigna: listado de 50 registros o más)
+   Endpoint a usar: GET http://localhost:3000/api/v1/actores
+
+   Devuelve una lista de actores populares. Paginé y limité los resultados a los primeros 50 registros para cumplir con la consigna.
+   Los datos devueltos incluyen:
+   id (identificador único del actor)
+   name (nombre del actor)
+   popularity (nivel de popularidad)
+   known_for (trabajos destacados del actor, como películas o series).
+
+2- Para filtrar actores por ID (Punto 2 de la consigna: filtrar por ID)
+
+   Cada actor tiene un campo id único que se utiliza para identificarlo.
+
+   Endpoint a usar: GET http://localhost:3000/api/v1/actores/{id}
+   
+   Ejemplos de endpoints válidos que se pueden probar:
+   http://localhost:3000/api/v1/actores/31 (Tom Hanks)
+   http://localhost:3000/api/v1/actores/99112 (Andrea Del Boca)
+   http://localhost:3000/api/v1/actores/93650 (Guillermo Francella)
+   http://localhost:3000/api/v1/actores/1223786 (Emilia Clarke)
+
+   Ejemplos de endpoints NO válidos para verificar errores: 
+   http://localhost:3000/api/v1/actores/1231456178910  // Devuelve "error": "Actor no encontrado"
+   http://localhost:3000/api/v1/actores/000 // Devuelve "error": "Actor no encontrado"
+ 
+
+3- Para filtrar el listado de actores (listado del punto 1) usando query params (Punto 3 de la consigna: filtrar por algún campo importante)
+   Decidí filtrar los actores por su nombre. 
+   Endpoint a usar:  GET http://localhost:3000/api/v1/actores/name?nombre={nombre_actor}
+
+   Ejemplos de endpoints válidos para probar:
+   http://localhost:3000/api/v1/actores/name?nombre=DiCaprio // devuelve todos los actores y actrices con el apellido DiCaprio
+   http://localhost:3000/api/v1/actores/name?nombre=Leonardo%20DiCaprio //devuelve especificamente a ese actor
+   http://localhost:3000/api/v1/actores/name?nombre=Stallone //devuelve todos los actores y actrices con apellido Stallone
+   http://localhost:3000/api/v1/actores/name?nombre=Sylvester%20Stallone //devuelve especificamente el actor Sylvester Stallone
+
+
+
+   Ejemplos de endpoints NO válidos para verificar errores: (Devuelven el mensaje "error": "No se encontraron actores con ese nombre" )
+   http://localhost:3000/api/v1/actores/name?nombre=Nombre%20Falso 
+   http://localhost:3000/api/v1/actores/name?nombre=Carla%20Racciatti
+
+*******************************************************************************************************************

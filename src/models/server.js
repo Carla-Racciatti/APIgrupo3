@@ -15,7 +15,8 @@ class Server {
 
   rutas () {
     // rutas integrante 1: Carla.  Ruta para libros
-    this.app.use('/api/v1/libros', require('../routes/books'))
+    this.app.use('/api/v1/libros', require('../routes/books'))    
+    this.app.use('/api/v1/actores', require('../routes/actors'))// NUEVO: Ruta para actores (Carla, reemplazando libros)
 
     // rutas integrante 2: Nicolás Clemente. Ruta para peliculas
     this.app.use('/api/v1/peliculas', require('../routes/movies'))

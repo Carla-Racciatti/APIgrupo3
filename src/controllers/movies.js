@@ -31,14 +31,16 @@ const mapMovieResults = (results) => results.map(({
   release_date,
   overview,
   vote_average,
-  poster_path
+  poster_path,
+  genre_ids, 
 }) => ({
   key: `/movies/${id}`,
   title,
   releaseDate: release_date,
   overview,
   voteAverage: vote_average,
-  posterPath: poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : null
+  posterPath: poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : null,
+  genres: genre_ids || []
 }))
 
 
@@ -178,18 +180,18 @@ const getGenresList = async (req = request, res = response) => {
   try {
     const response = await axiosInstance.get('/genre/movie/list', {
       params: { language: DEFAULT_LANGUAGE }
-    })
+    });
+    
+    const genres = response.data.genres.map(genre => genre.name);
 
-    if (!response.data || !response.data.genres) {
-      return res.status(500).json({ msg: 'Error', error: 'No se pudo obtener la lista de géneros' })
-    }
-
-    res.status(200).json({ msg: 'Ok', data: response.data.genres })
+    res.status(200).json({
+      msg: 'Ok',
+      data: genres
+    });
   } catch (error) {
-    console.error('Error en getGenresList:', error)
-    handleError(res, error, 'Error al obtener la lista de géneros')
+    handleError(res, error, 'Error al obtener la lista de géneros');
   }
-}
+};
 
 module.exports = {
   getPopularMovies,

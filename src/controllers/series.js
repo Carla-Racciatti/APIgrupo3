@@ -2,7 +2,7 @@ const axios = require('axios');
 const { request, response } = require('express');
 const BASE_URL = process.env.TVMAZE_BASE_URL || 'https://api.tvmaze.com';
 
-// Obtener una lista general de series, con un límite de 50 registros por página
+// Obtener una lista general de series, con un límite de 50 registros
 const getSeries = async (req = request, res = response) => {
   try {
     const { page = 1 } = req.query;
@@ -19,7 +19,11 @@ const getSeries = async (req = request, res = response) => {
       });
     }
 
-    const series = showsData.map((show) => ({
+    // Limitar a 50 series por página
+    const startIndex = (page - 1) * 50;
+    const limitedShows = showsData.slice(startIndex, startIndex + 50);
+
+    const series = limitedShows.map((show) => ({
       id: show.id,
       name: show.name,
       genres: show.genres,
@@ -130,8 +134,51 @@ const getSeriesPorGenero = async (req = request, res = response) => {
   }
 };
 
+// Buscar series por nombre
+const searchSeries = async (req = request, res = response) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({
+      status: 'error',
+      msg: 'Debes proporcionar un nombre para buscar las series'
+    });
+  }
+
+  try {
+    const response = await axios.get(`${BASE_URL}/search/shows?q=${query}`);
+    const showsData = response.data;
+
+    const series = showsData.map((result) => {
+      const show = result.show;
+      return {
+        id: show.id,
+        name: show.name,
+        genres: show.genres,
+        premiered: show.premiered,
+        status: show.status,
+        summary: show.summary,
+        network: show.network ? show.network.name : 'Unknown',
+        imageUrl: show.image ? show.image.medium : 'https://via.placeholder.com/210x295' // URL de la imagen
+      };
+    });
+
+    res.status(200).json({
+      status: 'ok',
+      data: series
+    });
+  } catch (error) {
+    console.error('Error al buscar las series: ', error);
+    res.status(500).json({
+      status: 'error',
+      msg: 'Error inesperado al buscar las series. Por favor, inténtalo de nuevo más tarde.'
+    });
+  }
+};
+
 module.exports = {
   getSeries,
   getSeriePorId,
-  getSeriesPorGenero
+  getSeriesPorGenero,
+  searchSeries
 };

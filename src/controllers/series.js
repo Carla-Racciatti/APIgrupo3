@@ -6,23 +6,20 @@ const BASE_URL = process.env.TVMAZE_BASE_URL || 'https://api.tvmaze.com';
 const getSeries = async (req = request, res = response) => {
   try {
     const { page = 1 } = req.query;
-    let allShows = [];
-    let currentPage = page - 1;
-    let showsData;
 
-    // Iterar a través de todas las páginas hasta que no haya más datos
-    do {
-      const response = await axios.get(`${BASE_URL}/shows?page=${currentPage}`);
-      showsData = response.data;
-      allShows = allShows.concat(showsData);
-      currentPage++;
-    } while (showsData.length > 0);
+    // Llamada al endpoint de TVMaze para obtener todas las series
+    const response = await axios.get(`${BASE_URL}/shows?page=${page - 1}`); // TVMaze utiliza un índice basado en 0 para las páginas
+    const showsData = response.data;
 
-    // Limitar a 50 series por página
-    const startIndex = (page - 1) * 50;
-    const limitedShows = allShows.slice(startIndex, startIndex + 50);
+    // Si no hay resultados, devolvemos un mensaje adecuado
+    if (showsData.length === 0) {
+      return res.status(404).json({
+        status: 'error',
+        msg: 'No se encontraron series en esta página.'
+      });
+    }
 
-    const series = limitedShows.map((show) => ({
+    const series = showsData.map((show) => ({
       id: show.id,
       name: show.name,
       genres: show.genres,
@@ -36,7 +33,7 @@ const getSeries = async (req = request, res = response) => {
     res.status(200).json({
       status: 'ok',
       data: series,
-      total: allShows.length, // Total de series devueltas
+      total: showsData.length, // Total de series devueltas
       page // Página actual
     });
   } catch (error) {
@@ -90,20 +87,11 @@ const getSeriesPorGenero = async (req = request, res = response) => {
 
   try {
     // Hacemos la búsqueda en la API de TVMaze
-    let allShows = [];
-    let currentPage = 0;
-    let showsData;
-
-    // Iterar a través de todas las páginas hasta que no haya más datos
-    do {
-      const response = await axios.get(`${BASE_URL}/shows?page=${currentPage}`);
-      showsData = response.data;
-      allShows = allShows.concat(showsData);
-      currentPage++;
-    } while (showsData.length > 0);
+    const response = await axios.get(`${BASE_URL}/shows`); // Obtiene todas las series
+    const showsData = response.data;
 
     // Filtramos por género (asegurando que la comparación sea insensible a mayúsculas/minúsculas)
-    const filteredSeries = allShows.filter((show) =>
+    const filteredSeries = showsData.filter((show) =>
       show.genres.map(g => g.toLowerCase()).includes(genre.toLowerCase())
     );
 

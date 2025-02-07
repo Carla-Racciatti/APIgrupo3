@@ -25,12 +25,20 @@ const handleError = (res, error, customMessage) => {
 }
 
 // Función para mapear los resultados de películas a un formato estandarizado
-const mapMovieResults = (results) => results.map(({ id, title, release_date, overview, vote_average }) => ({
+const mapMovieResults = (results) => results.map(({
+  id,
+  title,
+  release_date,
+  overview,
+  vote_average,
+  poster_path
+}) => ({
   key: `/movies/${id}`,
   title,
   releaseDate: release_date,
   overview,
-  voteAverage: vote_average
+  voteAverage: vote_average,
+  posterPath: poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : null
 }))
 
 
@@ -83,7 +91,15 @@ const getMovieById = async (req = request, res = response) => {
       })
     }
 
-    const { title, release_date, overview, vote_average, genres } = data.data
+    const { 
+      title, 
+      release_date, 
+      overview, 
+      vote_average, 
+      genres,
+      poster_path 
+    } = data.data
+
     res.status(200).json({
       msg: 'Ok',
       data: {
@@ -92,7 +108,8 @@ const getMovieById = async (req = request, res = response) => {
         releaseDate: release_date,
         overview,
         voteAverage: vote_average,
-        genres: genres ? genres.map(genre => genre.name) : []
+        genres: genres ? genres.map(genre => genre.name) : [],
+        posterPath: poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : null
       }
     })
   } catch (error) {

@@ -31,14 +31,16 @@ const mapMovieResults = (results) => results.map(({
   release_date,
   overview,
   vote_average,
-  poster_path
+  poster_path,
+  genre_ids, 
 }) => ({
   key: `/movies/${id}`,
   title,
   releaseDate: release_date,
   overview,
   voteAverage: vote_average,
-  posterPath: poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : null
+  posterPath: poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : null,
+  genres: genre_ids || []
 }))
 
 

@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')  
 
 class Server {
   constructor () {
@@ -9,14 +10,15 @@ class Server {
   }
 
   middleware () {
+    this.app.use(cors())  
     this.app.use(express.static('public'))
-    this.app.use(express.json())// para poder recibir formato Json
+    this.app.use(express.json())
   }
 
   rutas () {
     // rutas integrante 1: Carla.  Ruta para libros
     this.app.use('/api/v1/libros', require('../routes/books'))    
-    this.app.use('/api/v1/actores', require('../routes/actors'))// NUEVO: Ruta para actores (Carla, reemplazando libros)
+    this.app.use('/api/v1/actores', require('../routes/actors'))
 
     // rutas integrante 2: Nicolás Clemente. Ruta para peliculas
     this.app.use('/api/v1/peliculas', require('../routes/movies'))
@@ -32,7 +34,7 @@ class Server {
 
   listen () {
     this.app.listen(this.port, () => {
-      console.log(`Se encuentra corriendo en puerto ${this.port}`) // para saber cuando esté corriendo
+      console.log(`Se encuentra corriendo en puerto ${this.port}`)
     })
   }
 }

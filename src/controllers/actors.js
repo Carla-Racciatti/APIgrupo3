@@ -37,18 +37,6 @@ const getActores = async (req = request, res = response) => {
     );
     
     
-    
-    /*
-    const { results, total_pages, total_results } = apiResponse.data;
-
-    const actores = results.slice(0, limit).map(({ id, name, known_for, popularity, profile_path }) => ({
-      id,
-      name,
-      knownFor: known_for.map(item => item.title || item.name || 'Desconocido'),
-      popularity,
-      profileImage: profile_path ? `https://image.tmdb.org/t/p/w500${profile_path}` : 'URL_DEFAULT_IMAGE'
-    }));
-    */
 
     res.status(200).json({
       msg: 'Ok',
@@ -66,6 +54,8 @@ const getActores = async (req = request, res = response) => {
   }
 };
 
+
+/*ANTERIOR:
 // Buscar actor por nombre. Punto 3 de la consigna (filtro por nombre)
 const getActorPorNombre = async (req = request, res = response) => {
   const { nombre = '' } = req.query;
@@ -82,23 +72,7 @@ const getActorPorNombre = async (req = request, res = response) => {
       headers: { Authorization: `Bearer ${apiKey}` },
       params: { query: nombre }
     });
-    /*
-    const { results } = apiResponse.data;
 
-    if (!results || results.length === 0) {
-      return res.status(404).json({
-        msg: 'Error',
-        error: 'No se encontraron actores con ese nombre'
-      });
-    }
-
-    const actores = results.map(({ id, name, known_for, popularity, profile_path }) => ({
-      id,
-      name,
-      knownFor: known_for.map(item => item.title || item.name || 'Desconocido'),
-      popularity,
-      profileImage: profile_path ? `https://image.tmdb.org/t/p/w500${profile_path}` : 'URL_DEFAULT_IMAGE'
-    }));*/
 
     const { results } = apiResponse.data;
 
@@ -140,7 +114,65 @@ const getActorPorNombre = async (req = request, res = response) => {
     });
   }
 };
+*/
+//
+//CAMBIOS: 
+const getActorPorNombre = async (req = request, res = response) => {
+  const { nombre = '' } = req.query;
 
+  if (!nombre) {
+    return res.status(400).json({
+      msg: 'Error',
+      error: 'Debes proporcionar un nombre para buscar actores'
+    });
+  }
+
+  try {
+    const apiResponse = await axios.get(`${baseUrl}/search/person`, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+      params: { query: nombre, page: 1 } // <-- Agregamos la paginación
+    });
+
+    const { results, total_pages } = apiResponse.data;
+
+    if (!Array.isArray(results) || results.length === 0) {
+      return res.status(404).json({
+        msg: 'Error',
+        error: 'No se encontraron actores con ese nombre',
+      });
+    }
+
+    const actores = await Promise.all(
+      results.map(async ({ id, name, known_for, popularity, profile_path }) => {
+        const detailsResponse = await axios.get(`${baseUrl}/person/${id}`, {
+          headers: { Authorization: `Bearer ${apiKey}` },
+        });
+        const biography = detailsResponse.data.biography || 'Biografía no disponible';
+
+        return {
+          id,
+          name,
+          knownFor: known_for.map(item => item.title || item.name || 'Desconocido'),
+          popularity,
+          profileImage: profile_path ? `https://image.tmdb.org/t/p/w500${profile_path}` : 'URL_DEFAULT_IMAGE',
+          biography, 
+        };
+      })
+    );
+
+    res.status(200).json({
+      msg: 'Ok',
+      totalPages: total_pages,
+      data: actores
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      msg: 'Error',
+      error: 'Error inesperado al buscar el actor por nombre'
+    });
+  }
+};
 
 
 // Buscar actor por ID. Punto 2 de la consigna (filtro por ID )

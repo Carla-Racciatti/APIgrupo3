@@ -117,8 +117,9 @@ const getActorPorNombre = async (req = request, res = response) => {
 */
 //
 //CAMBIOS: 
+
 const getActorPorNombre = async (req = request, res = response) => {
-  const { nombre = '' } = req.query;
+  const { nombre = '', page = 1, limit = 50 } = req.query;
 
   if (!nombre) {
     return res.status(400).json({
@@ -130,7 +131,7 @@ const getActorPorNombre = async (req = request, res = response) => {
   try {
     const apiResponse = await axios.get(`${baseUrl}/search/person`, {
       headers: { Authorization: `Bearer ${apiKey}` },
-      params: { query: nombre, page: 1 } // <-- Agregamos la paginación
+      params: { query: nombre, page, include_adult: false } //  include_adult en false para evitar contenido para adultos
     });
 
     const { results, total_pages } = apiResponse.data;
@@ -155,15 +156,52 @@ const getActorPorNombre = async (req = request, res = response) => {
           knownFor: known_for.map(item => item.title || item.name || 'Desconocido'),
           popularity,
           profileImage: profile_path ? `https://image.tmdb.org/t/p/w500${profile_path}` : 'URL_DEFAULT_IMAGE',
-          biography, 
+          biography,
         };
       })
     );
 
+    // bucle para cargar más actores si hay más páginas.
+    let nextPage = parseInt(page, 10) + 1;
+    let moreResults = [];
+
+    // Asegúrate de no exceder el total de páginas
+    while (nextPage <= total_pages && moreResults.length < limit) {
+      const nextPageResponse = await axios.get(`${baseUrl}/search/person`, {
+        headers: { Authorization: `Bearer ${apiKey}` },
+        params: { query: nombre, page: nextPage },
+      });
+
+      const nextResults = nextPageResponse.data.results;
+      if (nextResults && nextResults.length > 0) {
+        moreResults = await Promise.all(
+          nextResults.map(async ({ id, name, known_for, popularity, profile_path }) => {
+            const detailsResponse = await axios.get(`${baseUrl}/person/${id}`, {
+              headers: { Authorization: `Bearer ${apiKey}` },
+            });
+            const biography = detailsResponse.data.biography || 'Biografía no disponible';
+
+            return {
+              id,
+              name,
+              knownFor: known_for.map(item => item.title || item.name || 'Desconocido'),
+              popularity,
+              profileImage: profile_path ? `https://image.tmdb.org/t/p/w500${profile_path}` : 'URL_DEFAULT_IMAGE',
+              biography,
+            };
+          })
+        );
+      }
+      nextPage++;
+    }
+
+    // combino resultados
+    const allResults = [...actores, ...moreResults].slice(0, limit);
+
     res.status(200).json({
       msg: 'Ok',
       totalPages: total_pages,
-      data: actores
+      data: allResults,
     });
   } catch (error) {
     console.error(error);
@@ -173,6 +211,7 @@ const getActorPorNombre = async (req = request, res = response) => {
     });
   }
 };
+//
 
 
 // Buscar actor por ID. Punto 2 de la consigna (filtro por ID )

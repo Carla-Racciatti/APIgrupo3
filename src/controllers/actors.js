@@ -10,7 +10,7 @@ const getActores = async (req = request, res = response) => {
   try {
     const apiResponse = await axios.get(`${baseUrl}/person/popular`, {
       headers: { Authorization: `Bearer ${apiKey}` },
-      params: { page }
+      params: { page, language: 'es-ES'  }
     });
     
     
@@ -22,6 +22,7 @@ const getActores = async (req = request, res = response) => {
         // Hago una llamada adicional para obtener biografía, porque no se encuentra disponible en la respuesta de actores populares
         const detailsResponse = await axios.get(`${baseUrl}/person/${id}`, {
           headers: { Authorization: `Bearer ${apiKey}` },
+          params: { language: 'es-ES' }
         });
         const biography = detailsResponse.data.biography || 'Biografía no disponible';
 
@@ -129,7 +130,7 @@ const getActorPorNombre = async (req = request, res = response) => {
   try {
     const apiResponse = await axios.get(`${baseUrl}/search/person`, {
       headers: { Authorization: `Bearer ${apiKey}` },
-      params: { query: nombre, page, include_adult: false } //  include_adult en false para evitar contenido para adultos
+      params: { query: nombre, page, include_adult: false,language: 'es-ES'} //  include_adult en false para evitar contenido para adultos
     });
 
     const { results, total_pages } = apiResponse.data;
@@ -145,6 +146,7 @@ const getActorPorNombre = async (req = request, res = response) => {
       results.map(async ({ id, name, known_for, popularity, profile_path }) => {
         const detailsResponse = await axios.get(`${baseUrl}/person/${id}`, {
           headers: { Authorization: `Bearer ${apiKey}` },
+          params: { language: 'es-ES' }
         });
         const biography = detailsResponse.data.biography || 'Biografía no disponible';
 
@@ -167,7 +169,7 @@ const getActorPorNombre = async (req = request, res = response) => {
     while (nextPage <= total_pages && moreResults.length < limit) {
       const nextPageResponse = await axios.get(`${baseUrl}/search/person`, {
         headers: { Authorization: `Bearer ${apiKey}` },
-        params: { query: nombre, page: nextPage },
+        params: { query: nombre, page: nextPage,  language: 'es-ES'  },
       });
 
       const nextResults = nextPageResponse.data.results;
@@ -176,6 +178,7 @@ const getActorPorNombre = async (req = request, res = response) => {
           nextResults.map(async ({ id, name, known_for, popularity, profile_path }) => {
             const detailsResponse = await axios.get(`${baseUrl}/person/${id}`, {
               headers: { Authorization: `Bearer ${apiKey}` },
+              params: { language: 'es-ES' }
             });
             const biography = detailsResponse.data.biography || 'Biografía no disponible';
 
@@ -228,6 +231,7 @@ const getActorPorId = async (req = request, res = response) => {
       // Llamada a la API de TMDB
       const apiResponse = await axios.get(`${baseUrl}/person/${id}`, {
         headers: { Authorization: `Bearer ${apiKey}` },
+        params: { language: 'es-ES' }
       });
   
       // Datos del actor

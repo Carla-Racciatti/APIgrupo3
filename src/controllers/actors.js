@@ -36,8 +36,6 @@ const getActores = async (req = request, res = response) => {
       })
     );
     
-    
-
     res.status(200).json({
       msg: 'Ok',
       page: Number(page),
@@ -55,7 +53,7 @@ const getActores = async (req = request, res = response) => {
 };
 
 
-/*ANTERIOR:
+/*VERSION ANTERIOR:
 // Buscar actor por nombre. Punto 3 de la consigna (filtro por nombre)
 const getActorPorNombre = async (req = request, res = response) => {
   const { nombre = '' } = req.query;
@@ -116,8 +114,8 @@ const getActorPorNombre = async (req = request, res = response) => {
 };
 */
 //
-//CAMBIOS: 
-
+//CAMBIOS, NUEVA VERSION DE getActorPorNombre: 
+// Buscar actor por nombre. Punto 3 de la consigna (filtro por nombre)
 const getActorPorNombre = async (req = request, res = response) => {
   const { nombre = '', page = 1, limit = 50 } = req.query;
 
@@ -165,7 +163,7 @@ const getActorPorNombre = async (req = request, res = response) => {
     let nextPage = parseInt(page, 10) + 1;
     let moreResults = [];
 
-    // Asegúrate de no exceder el total de páginas
+    // Evitar exceder el total de páginas
     while (nextPage <= total_pages && moreResults.length < limit) {
       const nextPageResponse = await axios.get(`${baseUrl}/search/person`, {
         headers: { Authorization: `Bearer ${apiKey}` },
@@ -195,7 +193,7 @@ const getActorPorNombre = async (req = request, res = response) => {
       nextPage++;
     }
 
-    // combino resultados
+    // combina resultados
     const allResults = [...actores, ...moreResults].slice(0, limit);
 
     res.status(200).json({
